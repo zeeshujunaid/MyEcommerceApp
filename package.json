@@ -17,8 +17,10 @@
     "axios": "^1.12.2",
     "react": "19.1.1",
     "react-native": "0.82.0",
+    "react-native-linear-gradient": "^2.8.3",
     "react-native-safe-area-context": "^5.6.1",
-    "react-native-screens": "^4.17.0"
+    "react-native-screens": "^4.17.0",
+    "react-native-toast-message": "^2.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
