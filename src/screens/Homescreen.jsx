@@ -1,30 +1,95 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = () => {
+  const [search, setSearch] = useState('');
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>🏠 Welcome to Home Screen</Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.replace("Login")}
+    <LinearGradient colors={['#a8e6cf', '#dcedc1']} style={styles.gradient}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.mainView}
       >
-        <Text style={styles.btnText}>Logout</Text>
-      </TouchableOpacity>
-    </View>
+        {/* 🔥 Modern Header */}
+        <View style={styles.header}>
+          <Text style={styles.logoText}>ShopEase</Text>
+
+          {/* 🔍 Search Bar */}
+          <View style={styles.searchContainer}>
+            <Icon name="search" size={22} color="#555" style={{ marginRight: 6 }} />
+            <TextInput
+              placeholder="Search products..."
+              placeholderTextColor="#777"
+              value={search}
+              onChangeText={setSearch}
+              style={styles.searchInput}
+            />
+          </View>
+
+          {/* 🛒 Cart Icon */}
+          <TouchableOpacity onPress={() => console.log('Cart pressed')}>
+            <Icon name="cart-outline" size={26} color="#333" />
+          </TouchableOpacity>
+        </View>
+
+        {/* You can add product list below */}
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 };
 
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#fff" },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 20 },
-  button: {
-    backgroundColor: "#ff3b30",
-    padding: 12,
-    borderRadius: 8,
-    width: 120,
+  gradient: {
+    flex: 1,
   },
-  btnText: { color: "#fff", fontWeight: "bold", textAlign: "center" },
+  mainView: {
+    flex: 1,
+    paddingTop: 50,
+    paddingHorizontal: 15,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 15,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+  },
+  logoText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#222',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    marginHorizontal: 10,
+    backgroundColor: '#f2f2f2',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    color: '#333',
+  },
 });
