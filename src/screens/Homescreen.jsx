@@ -36,7 +36,7 @@ const HomeScreen = ({navigation}) => {
   }, [search, allProducts]);
 
   return (
-    <LinearGradient colors={['#000', '#dcedc1']} style={styles.gradient}>
+    <LinearGradient colors={['#a8e6cf', '#dcedc1']} style={styles.gradient}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.mainView}
