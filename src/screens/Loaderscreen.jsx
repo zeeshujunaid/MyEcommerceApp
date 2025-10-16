@@ -7,31 +7,26 @@ import axios from 'axios';
 import { AppContext } from '../context/Appcontext';
 
 const LoaderScreen = ({ navigation }) => {
-  const { setProducts, setCategories } = useContext(AppContext);
+  const { setAllProducts, setProducts, setCategories } = useContext(AppContext);
 
   useEffect(() => {
     const loadAppData = async () => {
       try {
-        // Fetch both products & categories together
         const [productRes, categoryRes] = await Promise.all([
           axios.get('https://fakestoreapi.com/products'),
           axios.get('https://fakestoreapi.com/products/categories'),
         ]);
 
-        // Save them in context
-        setProducts(productRes.data);
+        setAllProducts(productRes.data); // Save all products
+        setProducts(productRes.data);    // Show initially all products
         setCategories(categoryRes.data);
 
-        // console
         console.log('Products and Categories loaded successfully');
         console.log('Products:', productRes.data);
         console.log('Categories:', categoryRes.data);
 
-
-        // Check user from AsyncStorage
         const user = await AsyncStorage.getItem('user');
 
-        // Navigate 
         setTimeout(() => {
           if (user) {
             Toast.show({
@@ -78,17 +73,7 @@ const LoaderScreen = ({ navigation }) => {
 export default LoaderScreen;
 
 const styles = StyleSheet.create({
-  gradient: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logo: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-  },
+  gradient: { flex: 1 },
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  logo: { width: 120, height: 120, borderRadius: 60 },
 });
