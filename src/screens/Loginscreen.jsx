@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,18 +8,29 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
+  Animated,
 } from "react-native";
 import Toast from "react-native-toast-message";
 import LinearGradient from "react-native-linear-gradient";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const Email = "user@gmail.com";
   const Password = "123456";
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -29,42 +40,52 @@ const LoginScreen = ({ navigation }) => {
         text2: "Please fill all the fields",
       });
       return;
-    } else if (email === Email && password === Password) {
-      Toast.show({
-        type: "success",
-        text1: "Login Successful",
-        text2: "Welcome back!",
-      });
-
-      await AsyncStorage.setItem('user', JSON.stringify({ email }));
-
-      navigation.replace("Home");
-
-    } else {
-      Toast.show({
-        type: "error",
-        text1: "Invalid Credentials",
-        text2: "Please use the correct email and password",
-      });
     }
+
+    setLoading(true);
+
+    setTimeout(async () => {
+      if (email === Email && password === Password) {
+        Toast.show({
+          type: "success",
+          text1: "Login Successful",
+          text2: "Welcome back!",
+        });
+
+        await AsyncStorage.setItem("user", JSON.stringify({ email }));
+        navigation.replace("Home");
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Invalid Credentials",
+          text2: "Please use the correct email and password",
+        });
+      }
+      setLoading(false);
+    }, 1200);
+  };
+
+  const handleReset = () => {
+    Toast.show({
+      type: "info",
+      text1: "Password Reset",
+      text2: "This feature will be available soon!",
+    });
   };
 
   return (
-    <LinearGradient
-      colors={["#a8e6cf", "#dcedc1"]}
-      style={styles.gradient}
-    >
+    <LinearGradient colors={["#ffffff", "#e6f7ff"]} style={styles.gradient}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
       >
-        <View style={styles.logoContainer}>
+        <Animated.View style={[styles.logoContainer, { opacity: fadeAnim }]}>
           <Image
             source={require("../../src/assets/images/logo.jpg")}
             style={styles.logo}
           />
           <Text style={styles.appTitle}>Welcome To Online Shop</Text>
-        </View>
+        </Animated.View>
 
         <View style={styles.card}>
           <Text style={styles.title}>Login</Text>
@@ -88,12 +109,25 @@ const LoginScreen = ({ navigation }) => {
             placeholderTextColor="#666"
           />
 
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.btnText}>Login</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleLogin}
+            disabled={loading}
+          >
+            <LinearGradient colors={["#007bff", "#00bfff"]} style={styles.gradientBtn}>
+              {loading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.btnText}>Login</Text>
+              )}
+            </LinearGradient>
           </TouchableOpacity>
 
           <Text style={styles.footerText}>
-            Forgot Password? <Text style={styles.link}>Reset</Text>
+            Forgot Password?{" "}
+            <Text style={styles.link} onPress={handleReset}>
+              Reset
+            </Text>
           </Text>
         </View>
       </KeyboardAvoidingView>
@@ -152,12 +186,16 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     fontSize: 16,
     backgroundColor: "#f9f9f9",
+    color: "#333",
   },
   button: {
-    backgroundColor: "#007bff",
-    padding: 14,
-    borderRadius: 10,
     marginTop: 10,
+    borderRadius: 10,
+    overflow: "hidden",
+  },
+  gradientBtn: {
+    padding: 14,
+    alignItems: "center",
   },
   btnText: {
     color: "#fff",
