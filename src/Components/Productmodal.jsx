@@ -12,6 +12,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
+import Toast from 'react-native-toast-message';
 
 const ProductModal = ({ visible, onClose, product }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -37,17 +38,26 @@ const ProductModal = ({ visible, onClose, product }) => {
       const productExists = cart.find(item => item.id === product.id);
 
       if (productExists) {
-        alert('Product already in cart');
+        Toast.show({
+          type: 'info',
+          text1: 'Product already in cart',
+        });
         return;
       }
 
       cart.push(product);
       await AsyncStorage.setItem('cart', JSON.stringify(cart));
-      alert('Product added to cart');
+      Toast.show({
+        type: 'success',
+        text1: 'Product added to cart',
+      });
       onClose();
     } catch (error) {
       console.log('Error adding to cart:', error);
-      alert('Failed to add product');
+      Toast.show({
+        type: 'error',
+        text1: 'Failed to add product to cart',
+      });
     }
   };
 
